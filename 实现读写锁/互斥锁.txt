@@ -1,0 +1,31 @@
+/*
+	这里会产生饥饿现象，即可能永远也无法写进去
+*/
+
+//这里使用两个互斥锁 + 1个整型变量来实现
+#include <pthread.h>
+
+pthread_mutex_t r_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t w_mutex = PTHREAD_MUTEX_INITIALIZER;
+int readers = 0;//记录读者的个数
+
+//写模式
+pthread_mutex_lock(&w_mutex);
+//write
+pthread_mutex_unlock(&w_mutex);
+
+//读模式
+pthread_mutex_lock(&r_mutex);
+
+if (readers == 0) {
+	pthread_mutex_lock(&w_mutex);
+}
+readers++;
+pthread_mutex_unlock(&r_mutex);
+//读操作
+pthread_mutex_lock(&r_mutex);
+readers--;
+if (reader == 0)
+	pthread_mutex_unlock(&w_mutex);
+pthread_mutex_unlock(&r_mutex);
+

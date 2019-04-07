@@ -1,0 +1,59 @@
+class Solution {
+public:
+    int myAtoi(string str) {
+        //测试用例
+        //"    142"
+        //"   -124"
+        //" 124w"
+        //"12345678900000"
+        
+        //去掉首部的空格
+        deleteWhitespace(str);
+        
+        int     index = 0;
+        int     length = str.length();
+        double  ret = 0;
+        int     sign = 1;
+        
+        if (str.length() == 0)    //case 0:""
+            return 0;
+        
+        if (str[index] == '+' || str[index] == '-') {
+            if (str[index] == '-') {
+                sign = -1;
+            }
+            //如果为'+', sign 不用进行设置
+            index++;
+        }
+            
+        while (index < length) {
+            if (str[index] >= '0' && str[index] <= '9') {
+                ret = ret * 10 + (str[index] - '0');
+            } else {
+                break;
+            }
+            
+            if (ret * sign > INT_MAX)
+                return INT_MAX;
+            if (ret * sign < INT_MIN)
+                return INT_MIN;
+            
+            index++;
+        }
+        
+        
+        return ret * sign;
+        
+    }
+private:
+    void deleteWhitespace(string &str) {
+        int index;
+        for (index = 0; index < str.length(); index++) {
+            if (str[index] == ' ')
+                continue;
+            else
+                break;
+        }
+        str = str.substr(index);
+    }
+};

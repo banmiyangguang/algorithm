@@ -1,0 +1,42 @@
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        //判断是否是一个空串
+        if (s.size() <= 1)
+            return s;
+        //记录最大回文子串的长度，记录其长度
+        int max = 1;
+        string str;
+        str = str + s[0];
+        int start = 0, end = 0;
+        for (auto beg = s.begin(); beg != s.end(); beg++) {
+            if (s.end() - beg < max)
+                break;
+            string::iterator tmp = beg;
+            while ((tmp = find(tmp, s.end(), *beg)) != s.end()) {
+                start = beg - s.begin();
+                end   = tmp - s.begin();
+                
+                if (judge(s, start, end)) {
+                    if (max <= end - start + 1) {
+                        max = end - start + 1;
+                        str = s.substr(start, end - start + 1);
+                    }
+                }
+                tmp++;
+            }
+        }
+        
+        return str;
+    }
+    
+private:
+    bool judge(const string& s, int start, int end) {
+        while (start < end) {
+            if (s[start++] == s[end--])
+                continue;
+            return false;
+        }    
+        return true;
+    }
+};

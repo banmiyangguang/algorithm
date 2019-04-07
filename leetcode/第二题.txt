@@ -1,0 +1,95 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        if (l1 == nullptr)
+            return l2;
+        if (l2 == nullptr)
+            return l1;
+        
+        ListNode* head = nullptr;
+        ListNode* pNode = nullptr;
+        ListNode* pNext = nullptr;
+        
+        
+        ListNode* p1 = l1, *p2 = l2;
+        int number = 0;
+        int count = 0;
+        
+        while (p1 != nullptr && p2 != nullptr) {
+            number = p1->val + p2->val + count;
+            count = 0;
+            if (number >= 10) {
+                count = 1;
+                number = number % 10;
+            }
+            
+            pNext = new ListNode(number);
+            if (head == nullptr) {
+                head = pNode = pNext;
+            } else {
+                pNode->next = pNext;
+                pNode = pNext;
+            }
+            
+            p1 = p1->next;
+            p2 = p2->next;
+        }
+        
+        if (p1 == nullptr)
+            pNode->next = createListNode(p2, count);
+        else
+            pNode->next = createListNode(p1, count);
+        return head;
+    }
+private:
+    //这里可以选择不对原链表进行修改
+    ListNode* createListNode(ListNode* list, int count)
+    {
+        if (list == nullptr) {
+            if (count != 0) {
+                return (new ListNode(count));
+            } else {
+                return nullptr;
+            }
+        }
+            
+        ListNode* head = nullptr;
+        ListNode* pNode = nullptr;
+        ListNode* pNext = nullptr;
+        int number = 0;
+        
+        while (list != nullptr) {
+            number = list->val + count;
+            count = 0;
+            if (number >= 10) {
+                count = 1;
+                number = number % 10;
+            }
+            
+            pNext = new ListNode(number);
+            if (head == nullptr) {
+                head = pNode = pNext;
+            } else {
+                pNode->next = pNext;
+                pNode = pNext;
+            }
+            
+            list = list->next;
+        }
+        
+        if (count != 0) {
+            pNext = new ListNode(count);
+            pNode->next = pNext;
+        }
+            
+        return head;
+    }
+};

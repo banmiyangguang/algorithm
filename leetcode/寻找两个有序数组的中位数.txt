@@ -1,0 +1,32 @@
+class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        int m = nums1.size();
+        int n = nums2.size();
+        
+        int k = (m + n) / 2;
+        double result = kth(nums1, 0, m, nums2, 0, n, k + 1);
+        if ( (m + n) % 2 == 0) {
+            double tmp = kth(nums1, 0, m, nums2, 0, n, k);
+            result = (result + tmp) / 2;
+        }
+        return result;
+    }
+private:
+    //找到两个有序数组中的倒数第K小的数字
+    int kth(vector<int>& nums1, int m_start, int m_end, vector<int>& nums2, int n_start, int n_end, int k) {
+        if (m_end - m_start < n_end - n_start)
+            return kth(nums2, n_start, n_end, nums1, m_start, m_end, k);
+        //应该如何表示某一个vector为空那
+        if (n_start == n_end)//表示第二个数组为空
+            return nums1[m_start + k - 1];
+        if (k == 1)  
+            return min(nums1[m_start], nums2[n_start]);
+        
+        int j = min(n_end - n_start, k / 2);
+        int i = k - j;
+        if (nums1[m_start + i - 1] > nums2[n_start + j - 1])
+            return kth(nums1, m_start, m_end, nums2, n_start + j, n_end, k - j);
+        return kth(nums1, m_start + i, m_end, nums2, n_start, n_end, k - i);
+    }
+};

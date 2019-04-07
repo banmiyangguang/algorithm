@@ -1,0 +1,99 @@
+/*
+struct ListNode {
+	int val;
+	struct ListNode *next;
+	ListNode(int x) :
+			val(x), next(NULL) {
+	}
+};*/
+class Solution {
+public:
+    ListNode* ReverseList(ListNode* pHead) {
+        if (pHead == nullptr || pHead->next == nullptr)
+            return pHead;
+        
+        ListNode* head = pHead;
+        ListNode* currNode = pHead->next;
+        ListNode* nextNode = currNode->next;
+        
+        head->next = nullptr;
+        while (currNode != nullptr) {
+            nextNode = currNode->next;
+            currNode->next = head;
+            head = currNode;
+            currNode = nextNode;
+        }
+        
+        return head;
+    }
+};
+------------------------------------------------------------------------------
+/*
+struct ListNode {
+	int val;
+	struct ListNode *next;
+	ListNode(int x) :
+			val(x), next(NULL) {
+	}
+};*/
+class Solution {
+public:
+    ListNode* ReverseList(ListNode* pHead) {
+        //使用递归来做
+        if (pHead == nullptr || pHead->next == nullptr)
+            return pHead;
+        
+        stack<ListNode*> s;
+        ListNode* currNode = pHead;
+        
+        while (currNode != nullptr) {
+            s.push(currNode);
+            currNode = currNode->next;
+        }
+        
+        ListNode* head = s.top();
+        ListNode* nextNode = nullptr;
+        currNode = head;
+        s.pop();
+        while (!s.empty()) {
+            nextNode = s.top();
+            s.pop();
+            currNode->next = nextNode;
+            currNode = nextNode;
+        }
+        
+        currNode->next = nullptr;
+        return head;
+    }
+};
+-------------------------------------------------------------------------
+/*
+struct ListNode {
+	int val;
+	struct ListNode *next;
+	ListNode(int x) :
+			val(x), next(NULL) {
+	}
+};*/
+class Solution {
+public:
+    ListNode* ReverseList(ListNode* pHead) {
+        reverse(pHead);
+        return head;
+    }
+private:
+    ListNode* reverse(ListNode* pHead)
+    {
+        if (pHead == nullptr || pHead->next == nullptr) {
+            head = pHead;
+            return pHead;
+        }
+        ListNode* pNext = pHead->next;
+        pHead->next = nullptr;
+        ListNode* currNode = reverse(pNext);
+        currNode->next = pHead;
+        return pHead;
+    }
+private:
+    ListNode* head;
+};

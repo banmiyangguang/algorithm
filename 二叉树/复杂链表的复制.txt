@@ -1,0 +1,54 @@
+/*
+struct RandomListNode {
+    int label;
+    struct RandomListNode *next, *random;
+    RandomListNode(int x) :
+            label(x), next(NULL), random(NULL) {
+    }
+};
+*/
+class Solution {
+public:
+    RandomListNode* Clone(RandomListNode* pHead)
+    {
+        if (pHead == nullptr)
+            return nullptr;
+        
+        RandomListNode* head = nullptr;
+        RandomListNode* currNode = pHead;
+        //在原有的链表节点后添加一个自己的复制,是不是还有可能是个循环链表
+        while (currNode != nullptr) {
+            RandomListNode* tmpList = (RandomListNode*)malloc(sizeof(RandomListNode));
+            tmpList->label = currNode->label;
+            tmpList->next = currNode->next;
+            tmpList->random = nullptr;
+            currNode->next = tmpList;
+            currNode = tmpList->next;
+        }
+        
+        currNode = pHead;
+        RandomListNode* newNode = currNode->next;
+        head = newNode;
+        //完成任意指针的初始化
+        while (currNode != nullptr) {
+            newNode = currNode->next;
+            //当前节点的随机指针可能为空
+            if (currNode->random != nullptr)
+                newNode->random = currNode->random->next;
+            currNode = newNode->next;
+        }
+        //完成链表的拆分
+        currNode = pHead;
+        newNode = currNode->next;
+        //加入尾部条件判断很重要
+        while (currNode != nullptr) {
+            currNode->next = newNode->next;
+            if (newNode->next != nullptr)
+                newNode->next = newNode->next->next;
+            currNode = currNode->next;
+            newNode = newNode->next;
+        }
+        
+        return head;
+    }
+};

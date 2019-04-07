@@ -1,0 +1,37 @@
+//用条件变量实现读写锁
+//这里用条件变量 + 互斥锁来实现
+//注意：条件变量必须和互斥锁一起来使用，等待、释放的时候都需要加锁
+#include <pthread.h>
+
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t	cond = PTHREAD_COND_INITIALIZER;
+
+//写模式
+pthread_mutex_lock(&mutex);
+while (w != 0 && r > 0) {
+	pthread_cond_wait(&cond, &mutex);
+}
+w = 1;
+
+pthread_mutex_unlock(&mutex);
+//write
+pthread_mutex_lock(&mutex);
+w = 0;
+pthread_cond_broadcast(&cond);	//唤醒其他因条件变量而产生的阻塞
+pthread_unlock(&mutex);
+
+//读模式
+pthread_mutex_lock(&mutex);
+while (w != 1) {
+	pthread_cond_wait(&cond, &mutex);
+}
+r++;
+pthread_mutex_unlock(&mutex);
+//读操作
+pthread_mutex_lock(&mutex);
+r--;
+if (r == 0)
+	pthread_cond_broadcast(&cond);//唤醒其他因条件变量而产生的阻塞
+pthread_mutex_unlock(&mutex);
+
+

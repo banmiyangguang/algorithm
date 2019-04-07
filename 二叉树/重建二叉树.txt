@@ -1,0 +1,46 @@
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> vin) {
+        if (pre.size() != vin.size()) 
+            throw std::exception();//这里可以直接结束了
+        if (pre.size() == 0)
+            return nullptr;
+        return create(pre, 0, pre.size() - 1, vin, 0, vin.size() - 1);
+    }
+private:
+    TreeNode* create(vector<int> &pre, int p_start, int p_end, vector<int> &vin, int v_start, int v_end)
+    {
+        //考虑左子树或者右子树没有值的情况
+        if (p_start > p_end)
+            return nullptr;
+        //构建一个二叉树的节点
+        TreeNode* head = new TreeNode(pre[p_start]);
+        if (v_start == v_end){
+            if (pre[p_start] == vin[v_start])
+                return head;
+            else 
+                throw std::exception();//这里可以直接结束了
+        }
+        //找到 pre[p_start] 在 vin 中的具体位置
+        int index;
+        for (index = v_start; vin[index] != pre[p_start] && index <= v_end; index++);
+        //差错控制函数
+        if (index == v_end && vin[index] != pre[p_start])
+            throw std::exception();//这里可以直接结束了
+        
+        int l_length = index - v_start;
+        head->left = create(pre, p_start + 1, p_start + l_length, vin, v_start, index - 1);
+        head->right = create(pre, p_start + l_length + 1, p_end, vin, index + 1, v_end);
+        
+        return head;
+    }
+};
