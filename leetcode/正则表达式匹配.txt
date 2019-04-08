@@ -1,0 +1,31 @@
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        //testcase:
+        //如果是空的话，应该如何匹配
+        if (p.length() == 0 && s.length() == 0)
+            return true;
+        
+        if (p.length() == 0 && s.length() != 0)
+            return false;
+        
+        //如果不空的话，应该如何匹配
+        //这里要求的是完全匹配 
+        
+        //先考虑有 * 的问题
+        if (p.length() > 1 && p[1] == '*') {
+            if (s.length() == 0)
+                return isMatch(s, p.substr(2));
+            //会存在 .* 的问题吗，假设不存在 .*
+            if (p[0] == '.' || s[0] == p[0])
+                return isMatch(s.substr(1), p) || isMatch(s, p.substr(2));
+            else if (s[0] != p[0])
+                return isMatch(s, p.substr(2));
+        }
+            
+        if (s.length() > 0 && (s[0] == p[0] || p[0] == '.')) 
+            return isMatch(s.substr(1), p.substr(1));
+                   
+        return false;
+    }
+};
